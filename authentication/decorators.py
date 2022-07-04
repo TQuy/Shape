@@ -5,6 +5,7 @@ from django.conf import settings
 from authentication.models import User
 import jwt
 
+
 def token_required(f):
     """
     required authentication to access
@@ -15,7 +16,7 @@ def token_required(f):
         print(request.headers)
         if 'Authorization' in request.headers:
             token = request.headers.get('Authorization')
-        
+
         if token is None:
             return Response({
                 "error": "token required!"
@@ -25,7 +26,7 @@ def token_required(f):
             data = jwt.decode(
                 token.split()[1],
                 settings.SECRET_KEY,
-                algorithms=["HS256"]                
+                algorithms=["HS256"]
             )
 
         except Exception:
@@ -48,7 +49,7 @@ def token_required(f):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         request.session["user_id"] = current_user.id
-    
+
         return f(request, current_user, *args, **kwargs)
 
     return decorator

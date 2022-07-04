@@ -8,6 +8,8 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 
 # Create your views here.
+
+
 @api_view(["POST"])
 def register(request):
     """
@@ -49,16 +51,16 @@ def login(request):
     try:
         current_user = authenticate(username=username, password=password)
         if current_user is None:
-                return Response({
-                    "error": "Authentication failed!"
-                }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "error": "Authentication failed!"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         request.user = current_user
-    
+
         token = jwt.encode({
             "id": current_user.id,
             "username": current_user.username,
-            },
+        },
             settings.SECRET_KEY,
             algorithm="HS256"
         )
@@ -67,7 +69,7 @@ def login(request):
             "token": token
         }, status=status.HTTP_200_OK)
 
-    except:
+    except BaseException:
         return Response({
             "error": "Unexpected error!"
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

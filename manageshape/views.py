@@ -6,16 +6,18 @@ from django.conf import settings
 from authentication.decorators import token_required
 from manageshape.serializers import ShapeSerializer
 
+
 @token_required
 @api_view(["GET", "POST"])
 def shapes(request, current_user):
     if request.method == "GET":
         shapes = current_user.shape_set.all()
         shapes_json = ShapeSerializer(shapes, many=True)
-        
+
         return Response({
             "shapes": shapes_json.data
         }, status=status.HTTP_200_OK)
+
 
 @token_required
 @api_view(["POST"])
@@ -38,7 +40,7 @@ def update_or_create_shape(request, current_user):
         )
 
         shapes_json = ShapeSerializer(shape)
-        
+
         return Response({
             "shape": shapes_json.data
         }, status=status.HTTP_201_CREATED)
@@ -51,6 +53,7 @@ def update_or_create_shape(request, current_user):
     return Response({
         "shape": shapes_json.data
     }, status=status.HTTP_200_OK)
+
 
 @token_required
 @api_view(["GET", "DELETE"])

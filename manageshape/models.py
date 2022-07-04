@@ -1,6 +1,7 @@
 from django.db import models
 from authentication.models import User
 
+
 class DateTimeModel(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
@@ -9,6 +10,8 @@ class DateTimeModel(models.Model):
         abstract = True
 
 # Create your models here.
+
+
 class Shape(DateTimeModel):
     """
     Model for table shapes
@@ -30,7 +33,7 @@ class Shape(DateTimeModel):
     class Meta(DateTimeModel.Meta):
         constraints = [
             models.UniqueConstraint(
-                fields=['name','user'],
+                fields=['name', 'user'],
                 name='unique_shape_name'
             )
         ]
