@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from authentication.models import User
 import jwt
 from django.conf import settings
+from django.contrib.auth import authenticate
 
 # Create your views here.
 @api_view(["POST"])
@@ -20,15 +21,12 @@ def register(request):
             "error": "username and password are required!"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(username=username).exists():
+    current_user, created = User.objects.get_or_create(username=username)
+
+    if created is False:
         return Response({
             'error': "username has already been registered"
         }, status=status.HTTP_400_BAD_REQUEST)
-
-    user = User.objects.create_user(
-        username = username,
-        password = password
-    )
 
     return Response({
         'data': "created user {} successfully".format(username)
@@ -49,10 +47,10 @@ def login(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        current_user = User.objects.filter(username=username).first()
+        current_user = authenticate(username=username, password=password)
         if current_user is None:
                 return Response({
-                    "error": "user does not exist!"
+                    "error": "Authentication failed!"
                 }, status=status.HTTP_400_BAD_REQUEST)
 
         request.user = current_user
