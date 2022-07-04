@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'manageshape.apps.ManageshapeConfig',
     'authentication.apps.AuthenticationConfig',
     'corsheaders',
     'rest_framework',
@@ -125,4 +126,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS_ORIGIN_WHITELIST = []
+# CORS_ORIGIN_WHITELIST = ["http://localhost"]
+# CORS_ORIGIN_REGEX_WHITELIST = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+    ]
+}

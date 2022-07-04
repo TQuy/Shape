@@ -10,7 +10,9 @@ class DateTimeModel(models.Model):
 
 # Create your models here.
 class Shape(DateTimeModel):
-
+    """
+    Model for table shapes
+    """
     class ShapeType(models.TextChoices):
         TRIANGLE = 'triangle'
         RECTANGLE = 'rectangle'
@@ -28,9 +30,12 @@ class Shape(DateTimeModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta(DateTimeModel.Meta):
-        constraint = [
+        constraints = [
             models.UniqueConstraint(
                 fields=['name','user'],
                 name='unique_shape_name'
             )
         ]
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"

@@ -39,12 +39,16 @@ def token_required(f):
                 return Response({
                     "error": "incorrect username or password!"
                 }, status=status.HTTP_400_BAD_REQUEST)
-            request.user = current_user
+
+            request.session['user_id'] = current_user.id
 
         except Exception:
             return Response({
                 "error": "{}".format(Exception)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return f(request, *args, **kwargs)
+
+        request.session["user_id"] = current_user.id
+    
+        return f(request, current_user, *args, **kwargs)
 
     return decorator
