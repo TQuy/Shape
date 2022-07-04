@@ -1,46 +1,21 @@
-from secrets import choice
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from authentication.models import User
 from manageshape.models import Shape
-import jwt
 from django.conf import settings
 from authentication.decorators import token_required
-import random
+from manageshape.serializers import ShapeSerializer
 
 @token_required
 @api_view(["GET", "POST"])
 def shapes(request, current_user):
     if request.method == "GET":
-        print(f"-----------------{current_user.shape_set.all()}")
-        shapes = current_user.shape_set.values('id', 'name', 'type')
+        shapes = current_user.shape_set.all()
+        shapes_json = ShapeSerializer(shapes, many=True)
         
         return Response({
-            "shapes": shapes
+            "shapes": shapes_json.data
         }, status=status.HTTP_200_OK)
-
-    # if request.method == "POST":
-    #     name = request.data.get("name")
-
-    #     if name is None:
-    #         return Response({
-    #             "error": "shape name required!"
-    #         }, status=status.HTTP_400_BAD_REQUEST)
-
-    #     shape_list = ["triangle", "rectangle", "diamond", "square"]
-
-    #     shape, created = request.user.shape_set.update_or_create(name=name, type=random.choice(shape_list))
-
-    #     if created:
-    #         return Response({
-    #             "shapes": shape
-    #         }, status=status.HTTP_201_CREATED)
-
-    #     return Response({
-    #         "shapes": shape
-    #     }, status=status.HTTP_200_OK)
 
 @token_required
 @api_view(["POST"])
@@ -61,23 +36,20 @@ def update_or_create_shape(request, current_user):
             name=name,
             type=type
         )
+
+        shapes_json = ShapeSerializer(shape)
+        
         return Response({
-            "shape": {
-                "id": shape.id,
-                "name": shape.name,
-                "type": shape.type
-            }
+            "shape": shapes_json.data
         }, status=status.HTTP_201_CREATED)
     # update shape
     shape.type = type
     shape.save()
 
+    shapes_json = ShapeSerializer(shape)
+
     return Response({
-        "shape": {
-            "id": shape.id,
-            "name": shape.name,
-            "type": shape.type
-        }
+        "shape": shapes_json.data
     }, status=status.HTTP_200_OK)
 
 @token_required
@@ -91,11 +63,10 @@ def shape(request, current_user, id):
                 "error": "shape not found!"
             }, status=status.HTTP_404_NOT_FOUND)
 
+        shapes_json = ShapeSerializer(shape)
+
         return Response({
-            "shapes": {
-                "name": shape.name,
-                "type": shape.type
-            }
+            "shapes": shapes_json.data
         }, status=status.HTTP_200_OK)
 
     if request.method == "DELETE":

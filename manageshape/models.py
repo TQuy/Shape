@@ -19,9 +19,7 @@ class Shape(DateTimeModel):
         SQUARE = 'square'
         DIAMOND = 'diamond'
 
-    name = models.CharField(
-        max_length=100
-    )
+    name = models.CharField(max_length=100)
     type = models.CharField(
         max_length=20,
         choices=ShapeType.choices,
