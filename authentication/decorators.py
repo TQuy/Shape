@@ -14,23 +14,23 @@ def token_required(f):
         token = None
         print(request.headers)
         if 'Authorization' in request.headers:
-            token = request.headers['Authorization']
+            token = request.headers.get('Authorization')
         
-        if not token:
+        if token is None:
             return Response({
                 "error": "token required!"
             }, status=status.HTTP_401_UNAUTHORIZED)
 
         try:
             data = jwt.decode(
-                token,
+                token.split()[1],
                 settings.SECRET_KEY,
                 algorithms=["HS256"]                
             )
 
-        except BaseException:
+        except Exception:
             return Response({
-                "error": "invalid token!"
+                "error": "Invalid token!"
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -41,9 +41,9 @@ def token_required(f):
                 }, status=status.HTTP_400_BAD_REQUEST)
             request.user = current_user
 
-        except:
+        except Exception:
             return Response({
-                "error": "Unexpected error!"
+                "error": "{}".format(Exception)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return f(request, *args, **kwargs)
 
