@@ -7,6 +7,7 @@ import re
 
 # Create your tests here.
 
+
 class ShapeTestCase(TestCase):
     def setUp(self):
         self.name = 'tri1'
@@ -18,13 +19,15 @@ class ShapeTestCase(TestCase):
         user = User.objects.first()
         # check create shape
         for i in range(len(shape_list)):
-            triangle = Shape.objects.create(name=shape_list[i], type=shape_list[i], user=user)
+            triangle = Shape.objects.create(
+                name=shape_list[i], type=shape_list[i], user=user)
         self.assertEqual(Shape.objects.count(), len(shape_list))
 
         # check unique contraint
         with self.assertRaises(IntegrityError) as err:
             with transaction.atomic():
-                Shape.objects.create(name=shape_list[0], type=shape_list[0], user=user)
+                Shape.objects.create(
+                    name=shape_list[0], type=shape_list[0], user=user)
         self.assertTrue(re.match(r"unique", str(err.exception), re.IGNORECASE))
 
         # check update_or_create

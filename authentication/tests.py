@@ -7,23 +7,32 @@ from django.db import transaction
 from rest_framework.test import APIClient
 import json
 
+
 class UserTestCase(TestCase):
     def setUp(self):
         self.username = 'quynt'
         self.password = '1'
-    
+
     def test_create_user(self):
-        User.objects.create_user(username=self.username, password=self.password)
+        User.objects.create_user(
+            username=self.username,
+            password=self.password)
         # check if new record is inserted
         self.assertEqual(User.objects.count(), 1)
         # check if unique related error is raised
         with self.assertRaises(IntegrityError) as err:
             with transaction.atomic():
-                User.objects.create_user(username=self.username, password=self.password)
-        self.assertTrue(re.match(r"unique", str(err.exception), flags=re.IGNORECASE))
+                User.objects.create_user(
+                    username=self.username, password=self.password)
+        self.assertTrue(
+            re.match(
+                r"unique", str(
+                    err.exception), flags=re.IGNORECASE))
 
-        another_username='quynt1'
-        user2 = User.objects.create_user(username=another_username, password=self.password)
+        another_username = 'quynt1'
+        user2 = User.objects.create_user(
+            username=another_username,
+            password=self.password)
         self.assertEqual(User.objects.count(), 2)
 
         user2.delete()
@@ -46,7 +55,7 @@ class UserTestCase(TestCase):
         created_user = User.objects.first()
         # check if password is hashed
         self.assertTrue(check_password(self.password, created_user.password))
-        return client        
+        return client
 
     def test_login_user(self):
         client, _ = self.register_user(self.username, self.password)
@@ -57,6 +66,3 @@ class UserTestCase(TestCase):
         content = json.loads(response.content)
         # check that token exist in response
         self.assertTrue(content.get('token'))
-
-
-

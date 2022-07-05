@@ -9,5 +9,8 @@ urlpatterns = [
         views.update_or_create_shape,
         name="create_shape"),
     # create shape
-    path('<int:id>', views.shape, name="shape")  # read and delete shape
+    path('<int:id>', views.shape, name="shape"),  # read and delete shape
+
+    path('area', views.compute_area, name='area'),
+    path('perimeter', views.compute_perimeter, name='perimeter'),
 ]

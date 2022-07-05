@@ -29,7 +29,7 @@ def register(request):
         return Response({
             'error': "username has already been registered"
         }, status=status.HTTP_400_BAD_REQUEST)
-        
+
     User.objects.create_user(username=username, password=password)
 
     return Response({
@@ -75,4 +75,3 @@ def login(request):
         return Response({
             "error": "Unexpected error!"
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
