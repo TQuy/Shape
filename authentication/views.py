@@ -23,12 +23,14 @@ def register(request):
             "error": "username and password are required!"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    current_user, created = User.objects.get_or_create(username=username)
+    existed = User.objects.filter(username=username).first()
 
-    if created is False:
+    if existed:
         return Response({
             'error': "username has already been registered"
         }, status=status.HTTP_400_BAD_REQUEST)
+        
+    User.objects.create_user(username=username, password=password)
 
     return Response({
         'data': "created user {} successfully".format(username)
@@ -73,3 +75,4 @@ def login(request):
         return Response({
             "error": "Unexpected error!"
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
