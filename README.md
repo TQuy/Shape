@@ -35,6 +35,23 @@ Format Python code style
 python ./scripts/autopep8.py
 ```
 ## APIs
+### Register user
+send `post` request to `/auth/register` with payload as below
+```
+{
+    "username": "quynt",
+    "password": "1"
+}
+```
+### Authenticate user
+send `post` request to `/auth/login` with payload as below
+```
+{
+    "username": "quynt",
+    "password": "1"
+}
+```
+### CRUD APIs related to shape object
 All CRUD requests related to Shape object require jwt token.
 ```
 Authorization: "Bearer {token}}"
