@@ -4,6 +4,8 @@ from authentication.tests import UserTestCase
 from authentication.models import User
 from django.db import IntegrityError, transaction
 import re
+import json
+from rest_framework.test import APIClient
 
 # Create your tests here.
 
@@ -38,3 +40,40 @@ class ShapeTestCase(TestCase):
         # check CASCADE delete
         user.delete()
         self.assertEqual(Shape.objects.count(), 0)
+
+    def test_create_shape(self):
+        username = 'quynt'
+        password = '1'
+        client = APIClient()
+        UserTestCase.register_user(username, password)
+        token = UserTestCase.login_user(username, password)
+        # create
+        response = client.post('/shapes/create', data={
+            "name": "first_shape",
+            "type": "triangle"
+        }, **{'HTTP_AUTHORIZATION': f'Bearer {token}'})
+        self.assertEqual(response.status_code, 201)
+        # create
+        response = client.post('/shapes/create', data={
+            "name": "second_shape",
+            "type": "triangle"
+        }, **{'HTTP_AUTHORIZATION': f'Bearer {token}'})
+        self.assertEqual(response.status_code, 201)
+        # update
+        response = client.post('/shapes/create', data={
+            "name": "second_shape",
+            "type": "diamond"
+        }, **{'HTTP_AUTHORIZATION': f'Bearer {token}'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_list(self):
+        username = 'quynt'
+        password = '1'
+        client = APIClient()
+        UserTestCase.register_user(username, password)
+        token = UserTestCase.login_user(username, password)
+        response = client.get('/shapes/',
+                              **{'HTTP_AUTHORIZATION': f'Bearer {token}'})
+        self.assertEqual(response.status_code, 200)
+        shapes = json.loads(response.content).get('shapes')
+        self.assertEqual(len(shapes), 0)

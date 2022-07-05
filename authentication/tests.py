@@ -38,8 +38,8 @@ class UserTestCase(TestCase):
         user2.delete()
         self.assertEqual(User.objects.count(), 1)
 
-    @classmethod
-    def register_user(cls, username, password):
+    @staticmethod
+    def register_user(username, password):
         client = APIClient()
         response = client.post('/auth/register', data={
             "username": username,
@@ -66,3 +66,13 @@ class UserTestCase(TestCase):
         content = json.loads(response.content)
         # check that token exist in response
         self.assertTrue(content.get('token'))
+
+    @staticmethod
+    def login_user(username, password):
+        client = APIClient()
+        response = client.post('/auth/login', data={
+            "username": username,
+            "password": password
+        })
+        token = json.loads(response.content).get('token')
+        return token

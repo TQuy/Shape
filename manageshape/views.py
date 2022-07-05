@@ -12,15 +12,14 @@ from manageshape import perimeter_equation
 
 
 @token_required
-@api_view(["GET", "POST"])
+@api_view(["GET"])
 def shapes(request, current_user):
-    if request.method == "GET":
-        shapes = current_user.shape_set.all()
-        shapes_json = ShapeSerializer(shapes, many=True)
+    shapes = current_user.shape_set.all()
+    shapes_json = ShapeSerializer(shapes, many=True)
 
-        return Response({
-            "shapes": shapes_json.data
-        }, status=status.HTTP_200_OK)
+    return Response({
+        "shapes": shapes_json.data
+    }, status=status.HTTP_200_OK)
 
 
 @token_required

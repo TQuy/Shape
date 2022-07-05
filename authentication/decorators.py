@@ -13,7 +13,6 @@ def token_required(f):
     @wraps(f)
     def decorator(request, *args, **kwargs):
         token = None
-        print(request.headers)
         if 'Authorization' in request.headers:
             token = request.headers.get('Authorization')
 
@@ -34,22 +33,16 @@ def token_required(f):
                 "error": "Invalid token!"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            current_user = User.objects.filter(id=data['id']).first()
-            if current_user is None:
-                return Response({
-                    "error": "incorrect username or password!"
-                }, status=status.HTTP_400_BAD_REQUEST)
+        current_user = User.objects.filter(id=data['id']).first()
 
-            request.session['user_id'] = current_user.id
-
-        except Exception:
+        if current_user is None:
             return Response({
-                "error": "{}".format(Exception)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                "error": "incorrect username or password!"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        request.session['user_id'] = current_user.id
 
         request.session["user_id"] = current_user.id
-
         return f(request, current_user, *args, **kwargs)
 
     return decorator
