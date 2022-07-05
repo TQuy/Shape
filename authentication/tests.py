@@ -29,12 +29,17 @@ class UserTestCase(TestCase):
         user2.delete()
         self.assertEqual(User.objects.count(), 1)
 
-    def register_user(self):
+    @classmethod
+    def register_user(cls, username, password):
         client = APIClient()
         response = client.post('/auth/register', data={
-            "username": self.username,
-            "password": self.password
+            "username": username,
+            "password": password
         }, format='json')
+        return client, response
+
+    def test_register_user(self):
+        client, response = self.register_user(self.username, self.password)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(User.objects.count(), 1)
 
@@ -44,7 +49,7 @@ class UserTestCase(TestCase):
         return client        
 
     def test_login_user(self):
-        client = self.register_user()
+        client, _ = self.register_user(self.username, self.password)
         response = client.post('/auth/login', data={
             "username": self.username,
             "password": self.password

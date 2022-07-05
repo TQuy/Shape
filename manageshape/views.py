@@ -31,23 +31,17 @@ def update_or_create_shape(request, current_user):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     shape = current_user.shape_set.filter(name=name).first()
-    # create shape
-    if shape is None:
-        shape = Shape.objects.create(
-            user=current_user,
-            name=name,
-            type=type
-        )
+    shape, created = Shape.objects.update_or_create(name=name, user=current_user, defaults={"type": type})
 
+    # create shape
+    if created:
         shapes_json = ShapeSerializer(shape)
 
         return Response({
             "shape": shapes_json.data
         }, status=status.HTTP_201_CREATED)
-    # update shape
-    shape.type = type
-    shape.save()
 
+    # update shape
     shapes_json = ShapeSerializer(shape)
 
     return Response({
