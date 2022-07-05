@@ -52,7 +52,7 @@ send `post` request to `/auth/login` with payload as below
 }
 ```
 ### CRUD APIs related to shape object
-All CRUD requests related to Shape object require jwt token.
+All CRUD requests related to Shape object require jwt token in header.
 ```
 Authorization: "Bearer {token}}"
 ```
