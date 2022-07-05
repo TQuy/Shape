@@ -64,10 +64,14 @@ send `get` request to `localhost:8000/shapes/area` with params as
 - for `triangle`, `params` can be `"3, 6, 7"` in which each number is the length of one edge.
 - for `rectangle`, `params` can be `2 , 4` in which each number is the length of 2 edges connected to each other.
 - for `square`, `params` can be `2`, the length of each edge.
-- for `diamond`, `params` can be `4,6`, the length of two diagonals
+- for `diamond`, `params` can be `4,6`, the length of two diagonals  
+
+Example url: `/shapes/area?type=triangle&params=3,6,7`
 ### compute perimeter
 send `get` request to `localhost:8000/shapes/perimeter`. The params is the same as `compute area`
 - for `triangle`, `params` can be `"3, 6, 7"` in which each number is the length of one edge.
 - for `rectangle`, `params` can be `2 , 4` in which each number is the length of 2 edges connected to each other.
 - for `square`, `params` can be `2`, the length of each edge.
 - for `diamond`, `params` can be `4`, the length of each edge.
+
+Example url: `/shapes/perimeter?type=triangle&params=3,6,7`
