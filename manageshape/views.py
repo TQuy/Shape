@@ -132,7 +132,7 @@ def compute_area(request):
 
     if err is not None:
         return Response({
-            "error": "In correct type!"
+            "error": err
         }, status=status.HTTP_400_BAD_REQUEST)
 
     return Response({
